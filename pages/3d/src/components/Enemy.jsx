@@ -57,7 +57,6 @@ export default function Enemy(props) {
         takeDamage(1);
       });
     }
-    console.log(props.order);
   }, []);
 
   return (
