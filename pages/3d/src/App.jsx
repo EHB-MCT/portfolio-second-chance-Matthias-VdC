@@ -17,13 +17,10 @@ import GameOverScreen from "./components/hud/GameOverScreen";
 import { useStore } from "./hooks/useStore";
 
 function App() {
-  const [isGameOver] = useStore((state) => [
+  const [isGameOver, enemies] = useStore((state) => [
     state.isGameOver,
+    state.enemies,
   ]);
-
-  useEffect(() => {
-    console.log(isGameOver);
-  }, [isGameOver]);
 
   return (
     <div id="canvas-container">

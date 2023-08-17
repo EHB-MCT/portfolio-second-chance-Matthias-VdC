@@ -18,6 +18,7 @@ export const useStore = create((set, get) => ({
     enemyFrequency: 5,
     roundPlaying: false,
     isGameOver: false,
+    isReset: false,
     addCube: async (x, y, z, price) => {
         if (get().money >= get().selectedPrice) {
             set((prev) => ({
@@ -58,10 +59,12 @@ export const useStore = create((set, get) => ({
             enemiesPos: [],
             health: 20,
             money: 100,
-            round: 0,
+            round: 1,
             enemyFrequency: 5,
             roundPlaying: false,
+            isReset: true,
         }))
+        console.log(get().round);
     },
     spawnEnemy: async (level, speed, count, max, health) => {
         set((prev) => ({
@@ -84,68 +87,64 @@ export const useStore = create((set, get) => ({
         set((prev) => ({
             roundPlaying: true,
             enemyFrequency: get().enemyFrequency - get().round / 10,
+            isReset: false,
         }))
         let enemyCount = Math.floor((get().round + get().round / get().enemyFrequency) + 5);
-        for (let i = 0; i < enemyCount; i++) {
+        // for (let i = 0; i < enemyCount; i++) {
+        for (let i = 0; i < 2; i++) {
             get().spawnEnemy(get().round, Math.floor(get().round * 1.2), i + 1, enemyCount, Math.floor(get().round * 1.4 + 10));
         }
-        // Not working because state change resets animation (so delay makes it weird)
-        // let interval = setInterval(() => get().spawnEnemy(get().round, get().round * 1.2), get().enemyFrequency * 1000);
-        // setTimeout(() => clearInterval(interval), get().enemyFrequency * 1000 * enemyCount);
     },
     endRound: async () => {
         set((prev) => ({
-            round: prev.round + 1,
             roundPlaying: false,
+            round: prev.round + 1,
             money: prev.round * 5 <= 150 ? prev.money + prev.round * 5 : prev.money + 150,
             // increase money earned per round, limit to 150
         }))
     },
     setEnemiesPos: async (pos, x, y, z) => {
-        set((prev) => ({
-            enemiesPos: [
-                ...prev.enemiesPos.slice(0, pos - 1),
-                {
-                    x: x,
-                    y: y,
-                    z: z,
-                },
-                ...prev.enemiesPos.slice(pos),
-            ]
-        }))
+        set((prev) => {
+            if (typeof prev.enemiesPos[pos] === 'undefined') { // if position does not exist add new position
+                return ({
+                    enemiesPos: [
+                        ...prev.enemiesPos,
+                        {
+                            pos: pos,
+                            x: x,
+                            y: y,
+                            z: z,
+                        }
+                    ]
+                });
+            } else { // If position already has data, update existing data
+                let newPos = prev.enemiesPos.map(u => u.pos !== pos ? u : { pos: pos, x: x, y: y, z: z });
+                return ({
+                    enemiesPos: newPos,
+                });
+            }
+        })
     },
     getEnemiesPos: async () => {
         return get().enemiesPos;
     },
     dealTurretDamage: async (damage, target) => {
-        if (get().enemies[target - 1]) {
-            set((prev) => ({
-                enemies: [
-                    ...prev.enemies.slice(0, target - 1),
-                    {
-                        ...prev.enemies[target - 1],
-                        health: prev.enemies[target - 1].health - damage,
-                    },
-                    ...prev.enemies.slice(target),
-                ]
-            }))
-        }
-        if (get().enemies.length > 0) {
-            const deleteIndex = get().enemies.filter((el) => {
-                // console.log(el);
-                if (el) {
-                    if (el.health) {
-                        if (el.health <= 0) {
-                            return el.order;
-                        }
-                    }
-                }
-                return undefined;
-            });
-            if (deleteIndex.length > 0) {
-                console.log(deleteIndex[0].order);
-                get().deleteEnemy(deleteIndex[0].order);
+        set((prev) => {
+            let enemy = prev.enemies[target];
+            enemy.health = enemy.health - damage;
+            if (enemy.health > 0) {
+                let newEnemy = prev.enemies.map(u => u.order !== target ? u : enemy);
+                return ({
+                    enemies: newEnemy,
+                });
+            } else {
+                return ({
+                    enemies: prev.enemies.splice(target, 1),
+                })
             }
+        })
+        if (get().enemies[target].health <= 0) {
+            get().deleteEnemy(target + 1);
         }
     },
     deleteEnemy: async (target) => {
@@ -164,7 +163,6 @@ export const useStore = create((set, get) => ({
             get().gameOver()
         }
     },
-
     gameOver: async () => {
         setLocalStorage('cubes', null);
         set(() => ({
@@ -173,7 +171,7 @@ export const useStore = create((set, get) => ({
             enemiesPos: [],
             health: 20,
             money: 100,
-            round: 0,
+            round: 1,
             enemyFrequency: 5,
             roundPlaying: false,
             isGameOver: true,

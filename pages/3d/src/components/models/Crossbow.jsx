@@ -42,39 +42,34 @@ export default function Crossbow({ position, ...props }) {
     state.getEnemiesPos,
   ]);
 
-  const [newEnemiesPos, setNewEnemiesPos] = useState();
-
-  useEffect(() => {
-    console.log(enemiesPos);
-  }, [enemiesPos]);
-
   const rotateRef = useRef(null);
 
   useInterval(async () => {
     let closeness = [];
 
-    if (newEnemiesPos && roundPlaying) {
-      let size = Object.keys(newEnemiesPos).length;
+    if (enemiesPos && roundPlaying) {
+      let size = Object.keys(enemiesPos).length;
       for (let i = 0; i < size; i++) {
         // get closest enemy to turret
         let v1 = new Vector3(
-          newEnemiesPos[i].x,
-          newEnemiesPos[i].y,
-          newEnemiesPos[i].z
+          enemiesPos[i].x,
+          enemiesPos[i].y,
+          enemiesPos[i].z
         );
         if (Math.round(group.current.position.distanceTo(v1)) <= 5) {
-          closeness[i - 1] = Math.round(group.current.position.distanceTo(v1));
+          closeness[i] = Math.round(group.current.position.distanceTo(v1));
         } else {
-          closeness[i - 1] = 10;
+          closeness[i] = 10;
         }
       }
       let closest = Math.min(...closeness);
       let index = closeness.indexOf(closest);
       if (closeness[index] <= 5) {
-        dealTurretDamage(2, index + 1);
-        // console.log(group.current.position.angleTo(enemiesPos[index + 1].x, enemiesPos[index + 1].y, enemiesPos[index + 1].z));
+        console.log(index);
+        dealTurretDamage(2, index);
+        // group.current.lookAt(new Vector3(enemiesPos[index].x, enemiesPos[index].y, enemiesPos[index].z));
+        group.current.getWorldDirection(new Vector3(enemiesPos[index].x, enemiesPos[index].y, enemiesPos[index].z))
       }
-      console.log(newEnemiesPos);
     }
   }, 1000);
 
