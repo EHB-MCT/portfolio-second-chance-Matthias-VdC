@@ -3,6 +3,8 @@ import { usePlane } from "@react-three/cannon";
 import { grassTexture } from "../images/textures";
 import { useStore } from "../hooks/useStore";
 import shallow from "zustand/shallow";
+import { useTexture } from "@react-three/drei";
+import { NearestFilter, RepeatWrapping } from "three";
 
 export default function Ground() {
   const [groundRef] = usePlane(() => ({
@@ -12,6 +14,14 @@ export default function Ground() {
   const [addCube, path] = useStore(
     (state) => [state.addCube, state.path]
   );
+  const p = useTexture({
+    map: "./models/castle/textures/Terreno_TileMat_3_baseColor.jpeg",
+  })
+
+  p.map.magFilter = NearestFilter;
+  p.map.wrapS = RepeatWrapping;
+  p.map.wrapT = RepeatWrapping;
+  p.map.repeat.set(6,6);
 
   // https://stackoverflow.com/questions/3115982/how-to-check-if-two-arrays-are-equal-with-javascript
   function arraysEqual(a1, a2) {
@@ -45,7 +55,7 @@ export default function Ground() {
         ref={groundRef}
       >
         <planeGeometry attach="geometry" args={[100, 100]} />
-        <meshStandardMaterial attach="material" map={grassTexture} />
+        <meshStandardMaterial attach="material" {...p} />
       </mesh>
     </>
   );

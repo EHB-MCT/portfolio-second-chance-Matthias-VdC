@@ -90,8 +90,8 @@ export const useStore = create((set, get) => ({
             isReset: false,
         }))
         let enemyCount = Math.floor((get().round + get().round / get().enemyFrequency) + 5);
-        // for (let i = 0; i < enemyCount; i++) {
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < enemyCount; i++) {
+        // for (let i = 0; i < 2; i++) {
             get().spawnEnemy(get().round, Math.floor(get().round * 1.2), i + 1, enemyCount, Math.floor(get().round * 1.4 + 10));
         }
     },

@@ -15,6 +15,7 @@ import Path from "./components/Path";
 import OtherPlayers from "./components/OtherPlayers";
 import GameOverScreen from "./components/hud/GameOverScreen";
 import { useStore } from "./hooks/useStore";
+import Castle from "./components/models/environment/Castle";
 
 function App() {
   const [isGameOver, enemies] = useStore((state) => [
@@ -44,6 +45,7 @@ function App() {
             <Enemies />
             {/* <Crossbow /> */}
             <Ground />
+            <Castle />
           </Physics>
           {/* <Environment preset="night" /> */}
         </Suspense>

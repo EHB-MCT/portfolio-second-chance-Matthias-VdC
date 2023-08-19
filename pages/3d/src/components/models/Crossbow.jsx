@@ -10,7 +10,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useStore } from "../../hooks/useStore";
 import { useBox } from "@react-three/cannon";
-import shallow from "zustand/shallow";
 import { Quaternion, Vector3 } from "three";
 import useInterval from "../../hooks/useInterval";
 

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Sword Soldier
+* source:	https://sketchfab.com/3d-models/sword-soldier-410fad7847ec4550ad7ca55b23e47932
+* author:	Ryzekiel (https://sketchfab.com/Ryzekiel)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Sword Soldier" (https://sketchfab.com/3d-models/sword-soldier-410fad7847ec4550ad7ca55b23e47932) by Ryzekiel (https://sketchfab.com/Ryzekiel) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
