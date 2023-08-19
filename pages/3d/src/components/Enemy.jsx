@@ -10,8 +10,9 @@ import Reptile from "./models/Reptile";
 import Soldier from "./models/Soldier";
 import { useAnimations, useGLTF } from "@react-three/drei";
 import Knight from "./models/Knight";
+import useSkinnedMeshClone from "../hooks/useSkinnedMeshClone";
 
-export default function Enemy(props) {
+export default function Enemy (props) {
   const [path, takeDamage, enemyFrequency, setEnemiesPos, enemiesPos] =
     useStore((state) => [
       state.path,
@@ -20,15 +21,19 @@ export default function Enemy(props) {
       state.setEnemiesPos,
       state.enemiesPos,
     ]);
+  const {scene, materials, animations, nodes} = useSkinnedMeshClone("/models/knight/scene-transformed.glb"); // with 'clonable' option
   const ref = useRef();
 
+  const { actions } = useAnimations(animations, ref);
+
   useEffect(() => {
+
     const timer = setInterval(() => {
       if (ref.current) {
         setEnemiesPos(
           props.order,
           ref.current.position.x,
-          ref.current.position.y,
+          ref.current.position.y - 0.5,
           ref.current.position.z
         ); // pos, x, y, z
       }
@@ -54,7 +59,7 @@ export default function Enemy(props) {
                 }
               },
             },
-            ">"
+            ">" // queue next gsap.to at the end of the previous one
           )
         );
       }
@@ -67,16 +72,10 @@ export default function Enemy(props) {
       });
     }
 
+    if (actions) actions["Dark_Knight_Bones|Dark_Knight_Walk"].play();
+
     return () => clearInterval(timer);
   }, []);
-
-  const { nodes, materials, animations } = useGLTF(
-    "/models/knight/scene-transformed.glb"
-  );
-  const { actions } = useAnimations(animations, ref);
-  useEffect(() => {
-    if (actions) actions["Dark_Knight_Bones|Dark_Knight_Walk"].play();
-  }, [actions]);
 
   /*
   Command: npx gltfjsx@6.2.11 ./public/models/knight/scene.gltf --shadows --transform 
@@ -86,7 +85,7 @@ export default function Enemy(props) {
   Source: https://sketchfab.com/3d-models/dark-knight-4206f5ca17144cdfb8500b95fecd36e3
   Title: Dark Knight
   */
- 
+
   return (
     <>
       <group
@@ -96,10 +95,9 @@ export default function Enemy(props) {
         castShadow
         receiveShadow
       >
-        <group name="Sketchfab_Scene">
+        <group>
           <primitive object={nodes._rootJoint} />
           <skinnedMesh
-            name="Object_78"
             geometry={nodes.Object_78.geometry}
             material={materials.PaletteMaterial001}
             skeleton={nodes.Object_78.skeleton}
@@ -107,7 +105,6 @@ export default function Enemy(props) {
             scale={100}
           />
           <skinnedMesh
-            name="Object_79"
             geometry={nodes.Object_79.geometry}
             material={materials.PaletteMaterial001}
             skeleton={nodes.Object_79.skeleton}
@@ -115,7 +112,6 @@ export default function Enemy(props) {
             scale={100}
           />
           <skinnedMesh
-            name="Object_80"
             geometry={nodes.Object_80.geometry}
             material={materials.PaletteMaterial001}
             skeleton={nodes.Object_80.skeleton}
@@ -123,7 +119,6 @@ export default function Enemy(props) {
             scale={100}
           />
           <skinnedMesh
-            name="Object_82"
             geometry={nodes.Object_82.geometry}
             material={materials.PaletteMaterial001}
             skeleton={nodes.Object_82.skeleton}
@@ -131,7 +126,6 @@ export default function Enemy(props) {
             scale={100}
           />
           <skinnedMesh
-            name="Object_83"
             geometry={nodes.Object_83.geometry}
             material={materials.PaletteMaterial001}
             skeleton={nodes.Object_83.skeleton}
@@ -139,7 +133,6 @@ export default function Enemy(props) {
             scale={100}
           />
           <skinnedMesh
-            name="Object_84"
             geometry={nodes.Object_84.geometry}
             material={materials.PaletteMaterial001}
             skeleton={nodes.Object_84.skeleton}
@@ -148,10 +141,12 @@ export default function Enemy(props) {
           />
         </group>
       </group>
-      {/* <mesh scale={0.5} position={path[0]} castShadow receiveShadow>
+      {/* <mesh ref={ref} scale={0.5} position={path[0]} castShadow receiveShadow>
         <boxGeometry attach="geometry" />
         <meshStandardMaterial color={"#faf"} attach="material" />
       </mesh> */}
     </>
   );
 }
+
+useGLTF.preload("/models/knight/scene-transformed.glb");

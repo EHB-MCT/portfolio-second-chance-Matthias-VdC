@@ -59,5 +59,9 @@ export default function Enemies() {
     }
   }, [isReset]);
 
+  useEffect(() => {
+    console.log(enemies.length, enemyArr.length);
+  }, [enemyArr]);
+
   return <>{enemyArr}</>;
 }
