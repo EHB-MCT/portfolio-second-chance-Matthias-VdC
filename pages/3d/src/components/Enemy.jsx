@@ -11,6 +11,7 @@ import Soldier from "./models/Soldier";
 import { useAnimations, useGLTF } from "@react-three/drei";
 import Knight from "./models/Knight";
 import useSkinnedMeshClone from "../hooks/useSkinnedMeshClone";
+import { Vector3 } from "three";
 
 export default function Enemy (props) {
   const [path, takeDamage, enemyFrequency, setEnemiesPos, enemiesPos] =
@@ -22,7 +23,7 @@ export default function Enemy (props) {
       state.enemiesPos,
     ]);
   const {scene, materials, animations, nodes} = useSkinnedMeshClone("/models/knight/scene-transformed.glb"); // with 'clonable' option
-  const ref = useRef();
+  const ref = useRef(null);
 
   const { actions } = useAnimations(animations, ref);
 
@@ -51,6 +52,11 @@ export default function Enemy (props) {
               z: path[i][2],
               duration: Math.round(1 / props.speed),
               ease: "none",
+              onStart: () => { // Enemy rotation
+                if(path[i + 1][0] !== undefined) {
+                  ref.current.lookAt(new Vector3(path[i + 1][0], path[i + 1][1] - 0.5, path[i + 1][2]));
+                }
+              },
               onUpdate: () => {
                 // remove entire animation timeline if enemy does not exist (fixes dmg taken from invisible enemies after reset)
                 if (ref.current === null) {
@@ -141,10 +147,6 @@ export default function Enemy (props) {
           />
         </group>
       </group>
-      {/* <mesh ref={ref} scale={0.5} position={path[0]} castShadow receiveShadow>
-        <boxGeometry attach="geometry" />
-        <meshStandardMaterial color={"#faf"} attach="material" />
-      </mesh> */}
     </>
   );
 }
