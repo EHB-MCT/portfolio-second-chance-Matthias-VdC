@@ -7,6 +7,7 @@
 
 1) Menu panel idea: <https://codepen.io/hexagoncircle/pen/yOwvQV>
 2) Text transition idea: <https://codepen.io/JFarrow/pen/wvoRObL>
+3) Embed react in vanilla website: <https://www.learningsomethingnew.com/embed-react-in-vanilla-js-website>
 
 ## NOT SUPPORTED
 
