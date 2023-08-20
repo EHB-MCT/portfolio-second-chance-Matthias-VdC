@@ -7,42 +7,41 @@ import gsap from "gsap";
 import { Vector3 } from "three";
 
 export default function Enemies() {
+  const [enemies, roundPlaying, isReset, deletedTarget, resetDeletedTarget] =
+    useStore((state) => [
+      state.enemies,
+      state.roundPlaying,
+      state.isReset,
+      state.deletedTarget,
+      state.resetDeletedTarget,
+    ]);
+
   const [enemyArr, setEnemyArr] = useState([]);
-  const [
-    enemies,
-    endRound,
-    path,
-    enemyFrequency,
-    setEnemiesPos,
-    takeDamage,
-    isReset,
-  ] = useStore((state) => [
-    state.enemies,
-    state.endRound,
-    state.path,
-    state.enemyFrequency,
-    state.setEnemiesPos,
-    state.takeDamage,
-    state.isReset,
-  ]);
 
   useEffect(() => {
-    if (enemies.length <= 0 && !isReset) {
-      setEnemyArr([]);
-      endRound();
-    } else {
-      for (let i = 0; i < enemies.length; i++) {
-        ((ind) => {
-          setTimeout(() => {
-            setEnemyArr((enemiesArr) => [
-              ...enemiesArr,
-              <Enemy key={ind} speed={enemies[ind].speed} order={ind} />,
-            ]);
-          }, 3000 * ind);
-        })(i);
-      }
+    if (roundPlaying) {
+      spawnEnemy();
     }
-  }, [enemies.length]);
+  }, [roundPlaying]);
+
+  useEffect(() => {
+    if (deletedTarget !== undefined) {
+      let newArr = enemyArr.filter((e) => e.props.order !== deletedTarget);
+      setEnemyArr(newArr);
+      resetDeletedTarget();
+    }
+  }, [deletedTarget]);
+
+  const sleep = (millis) => {
+    return new Promise((resolve) => setTimeout(resolve, millis));
+  };
+
+  async function spawnEnemy() {
+    for (let i = 0; i < enemies.length; i++) {
+      setEnemyArr((enemiesArr) => [...enemiesArr, enemies[i].node]);
+      await sleep(3000);
+    }
+  }
 
   useEffect(() => {
     if (isReset) {
@@ -58,10 +57,6 @@ export default function Enemies() {
       setEnemyArr([]);
     }
   }, [isReset]);
-
-  useEffect(() => {
-    console.log(enemies.length, enemyArr.length);
-  }, [enemyArr]);
 
   return <>{enemyArr}</>;
 }

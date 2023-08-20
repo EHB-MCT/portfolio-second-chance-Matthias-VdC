@@ -1,6 +1,7 @@
 import create from "zustand";
 import { nanoid } from "nanoid";
 import { Vector3 } from "three";
+import Enemy from "../components/Enemy";
 
 const getLocalStorage = (key) => JSON.parse(window.localStorage.getItem(key));
 const setLocalStorage = (key, value) => window.localStorage.setItem(key, JSON.stringify(value));
@@ -19,6 +20,7 @@ export const useStore = create((set, get) => ({
     roundPlaying: false,
     isGameOver: false,
     isReset: false,
+    deletedTarget: undefined,
     addCube: async (x, y, z, price) => {
         if (get().money >= get().selectedPrice) {
             set((prev) => ({
@@ -63,8 +65,8 @@ export const useStore = create((set, get) => ({
             enemyFrequency: 5,
             roundPlaying: false,
             isReset: true,
+            deletedTarget: undefined,
         }))
-        console.log(get().round);
     },
     spawnEnemy: async (level, speed, count, max, health) => {
         set((prev) => ({
@@ -79,21 +81,23 @@ export const useStore = create((set, get) => ({
                     max: max,
                     health: health,
                     maxHealth: health,
+                    node: <Enemy key={nanoid()} speed={speed} order={count} />
                 }
             ]
         }))
     },
     startRound: async () => {
         set((prev) => ({
+            round: prev.round !== 0 ? prev.round : 1, // If starting round is 0, set it to 1
             roundPlaying: true,
             enemyFrequency: get().enemyFrequency - get().round / 10,
             isReset: false,
         }))
         let enemyCount = Math.floor((get().round + get().round / get().enemyFrequency) + 5);
         for (let i = 0; i < enemyCount; i++) {
-        // for (let i = 0; i < 2; i++) {
-            get().spawnEnemy(get().round, Math.floor(get().round * 1.2), i + 1, enemyCount, Math.floor(get().round * 1.4 + 10));
+            get().spawnEnemy(get().round, Math.floor(get().round * 1.2) + 5, i, enemyCount, Math.floor(get().round * 1.4 + 10));
         }
+        setTimeout(() => {get().endRound()}, 3000 * get().enemies.length);
     },
     endRound: async () => {
         set((prev) => ({
@@ -131,37 +135,47 @@ export const useStore = create((set, get) => ({
     dealTurretDamage: async (damage, target) => {
         set((prev) => {
             let enemy = prev.enemies[target];
-            enemy.health = enemy.health - damage;
-            if (enemy.health > 0) {
-                let newEnemy = prev.enemies.map(u => u.order !== target ? u : enemy);
-                return ({
-                    enemies: newEnemy,
-                });
-            } else {
-                return ({
-                    enemies: prev.enemies.splice(target, 1),
-                })
-            }
+            
+            let updatedEnemies = prev.enemies.map((e) => {
+                if(e.order === target) {
+                    if(e.health - damage >= 0) {
+                        return {...e, health: e.health - damage};
+                    } else {
+                        get().deleteEnemy(target);
+                        return; // return empty to delete enemy with no health left
+                    }
+                } else {
+                    return e;
+                }
+            }).filter(e => e !== undefined);
+
+            return ({
+                enemies: updatedEnemies,
+            })
         })
-        if (get().enemies[target].health <= 0) {
-            get().deleteEnemy(target + 1);
-        }
     },
     deleteEnemy: async (target) => {
-        set((prev) => ({
-            money: prev.money + 5,
-            enemies: [
-                ...prev.enemies,
-            ].filter((el) => el.order !== target)
-        }))
+        set((prev) => {
+            return({
+                money: prev.money + 5,
+                enemies: prev.enemies.filter(e => e.order !== target),
+                deletedTarget: target,
+            })}
+        )
     },
-    takeDamage: async (damage) => {
-        set((prev) => ({
-            health: prev.health - damage,
-        }))
-        if (get().health <= 0) {
-            get().gameOver()
-        }
+    resetDeletedTarget: async () => {
+        set(() => ({deletedTarget: undefined}))
+    },
+    takeDamage: async (damage, target) => {
+        set((prev) => {
+            if (prev.health - damage <= 0) {
+                get().gameOver();
+            }
+            get().deleteEnemy(target);
+            return ({
+                health: prev.health - damage,
+            });
+        })
     },
     gameOver: async () => {
         setLocalStorage('cubes', null);

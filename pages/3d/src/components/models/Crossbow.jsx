@@ -64,10 +64,11 @@ export default function Crossbow({ position, ...props }) {
       let closest = Math.min(...closeness);
       let index = closeness.indexOf(closest);
       if (closeness[index] <= 5) {
-        console.log(index);
+        // console.log(index);
         dealTurretDamage(2, index);
-        // group.current.lookAt(new Vector3(enemiesPos[index].x, enemiesPos[index].y, enemiesPos[index].z));
-        group.current.getWorldDirection(new Vector3(enemiesPos[index].x, enemiesPos[index].y, enemiesPos[index].z))
+        // console.log(new Vector3(enemiesPos[index].x, enemiesPos[index].y, enemiesPos[index].z));
+        group.current.lookAt(new Vector3(enemiesPos[index].x, enemiesPos[index].y, enemiesPos[index].z));
+        // group.current.getWorldDirection(new Vector3(enemiesPos[index].x, enemiesPos[index].y, enemiesPos[index].z))
       }
     }
   }, 1000);

@@ -5,22 +5,19 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "../hooks/useStore";
 import shallow from "zustand/shallow";
 import gsap from "gsap";
-import EnemyModel from "./models/EnemyModel";
-import Reptile from "./models/Reptile";
-import Soldier from "./models/Soldier";
 import { useAnimations, useGLTF } from "@react-three/drei";
-import Knight from "./models/Knight";
 import useSkinnedMeshClone from "../hooks/useSkinnedMeshClone";
 import { Vector3 } from "three";
 
 export default function Enemy (props) {
-  const [path, takeDamage, enemyFrequency, setEnemiesPos, enemiesPos] =
+  const [path, takeDamage, enemyFrequency, setEnemiesPos, enemiesPos, enemies] =
     useStore((state) => [
       state.path,
       state.takeDamage,
       state.enemyFrequency,
       state.setEnemiesPos,
       state.enemiesPos,
+      state.enemies,
     ]);
   const {scene, materials, animations, nodes} = useSkinnedMeshClone("/models/knight/scene-transformed.glb"); // with 'clonable' option
   const ref = useRef(null);
@@ -38,7 +35,7 @@ export default function Enemy (props) {
           ref.current.position.z
         ); // pos, x, y, z
       }
-    }, 2000);
+    }, 1000);
 
     if (ref.current) {
       const timeline = new gsap.timeline();
@@ -53,6 +50,7 @@ export default function Enemy (props) {
               duration: Math.round(1 / props.speed),
               ease: "none",
               onStart: () => { // Enemy rotation
+                if(!path[i]) return
                 if(path[i + 1][0] !== undefined) {
                   ref.current.lookAt(new Vector3(path[i + 1][0], path[i + 1][1] - 0.5, path[i + 1][2]));
                 }
@@ -61,7 +59,9 @@ export default function Enemy (props) {
                 // remove entire animation timeline if enemy does not exist (fixes dmg taken from invisible enemies after reset)
                 if (ref.current === null) {
                   timeline.kill();
-                  actions["Dark_Knight_Bones|Dark_Knight_Walk"].stop();
+                  if(actions["Dark_Knight_Bones|Dark_Knight_Walk"] !== undefined) {
+                    actions["Dark_Knight_Bones|Dark_Knight_Walk"].stop();
+                  }
                 }
               },
             },
@@ -71,9 +71,11 @@ export default function Enemy (props) {
       }
       timeline.play().then(() => {
         if (typeof ref.current !== null) {
-          takeDamage(1); // Enemy completed path
+          takeDamage(1, props.order); // Enemy completed path
           clearInterval(timer);
-          actions["Dark_Knight_Bones|Dark_Knight_Walk"].stop();
+          if(actions["Dark_Knight_Bones|Dark_Knight_Walk"] !== undefined) {
+            actions["Dark_Knight_Bones|Dark_Knight_Walk"].stop();
+          }
         }
       });
     }
