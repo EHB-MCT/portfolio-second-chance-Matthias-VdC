@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Enemy from "./Enemy";
+import Enemy from "./models/Enemy";
 import { useStore } from "../hooks/useStore.js";
 import { useFrame } from "@react-three/fiber";
 import shallow from "zustand/shallow";
