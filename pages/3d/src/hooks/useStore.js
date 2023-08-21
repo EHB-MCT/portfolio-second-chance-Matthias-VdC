@@ -1,7 +1,7 @@
 import create from "zustand";
 import { nanoid } from "nanoid";
 import { Vector3 } from "three";
-import Enemy from "../components/Enemy";
+import Enemy from "../components/models/Enemy";
 
 const getLocalStorage = (key) => JSON.parse(window.localStorage.getItem(key));
 const setLocalStorage = (key, value) => window.localStorage.setItem(key, JSON.stringify(value));
@@ -14,7 +14,7 @@ export const useStore = create((set, get) => ({
     enemies: [],
     enemiesPos: [],
     health: 20,
-    money: 100,
+    money: 1000,
     round: 0,
     enemyFrequency: 5,
     roundPlaying: false,
@@ -36,13 +36,13 @@ export const useStore = create((set, get) => ({
             }));
         }
     },
-    removeCube: async (x, y, z) => {
+    removeCube: async (x, y, z, returnedMoney) => {
         set((prev) => ({
             cubes: prev.cubes.filter(cube => {
                 const [X, Y, Z] = cube.pos;
                 return X !== x || Z !== z;
             }),
-            money: prev.money + 60,
+            money: prev.money + returnedMoney,
         }));
     },
     setTexture: async (texture) => {
@@ -95,7 +95,7 @@ export const useStore = create((set, get) => ({
         }))
         let enemyCount = Math.floor((get().round + get().round / get().enemyFrequency) + 5);
         for (let i = 0; i < enemyCount; i++) {
-            get().spawnEnemy(get().round, Math.floor(get().round * 1.2) + 5, i, enemyCount, Math.floor(get().round * 1.4 + 10));
+            get().spawnEnemy(get().round, Math.floor(get().round * 1.2), i, enemyCount, Math.floor(get().round * 1.4 + 10));
         }
         setTimeout(() => {get().endRound()}, 3000 * get().enemies.length);
     },
@@ -179,6 +179,7 @@ export const useStore = create((set, get) => ({
     },
     gameOver: async () => {
         setLocalStorage('cubes', null);
+        document.exitPointerLock();
         set(() => ({
             cubes: [],
             enemies: [],

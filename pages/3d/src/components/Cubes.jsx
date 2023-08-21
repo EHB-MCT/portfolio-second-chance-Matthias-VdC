@@ -4,6 +4,7 @@ import { useStore } from "../hooks/useStore.js";
 import Cube from "./Cube";
 import Crossbow from "./models/Crossbow";
 import shallow from "zustand/shallow";
+import { Ram } from "./models/Ram.jsx";
 
 export default function Cubes() {
   const [cubes] = useStore((state) => [state.cubes]);
@@ -15,8 +16,8 @@ export default function Cubes() {
         return (
           <Crossbow key={key} position={[pos[0], pos[1] - 0.115, pos[2]]} />
         );
-      case "stone":
-        return <Cube key={key} position={pos} texture={texture} />;
+      case "ram":
+        return <Ram key={key} position={[pos[0], pos[1] - 0.115, pos[2]]} />;
       case "grass":
         return <Cube key={key} position={pos} texture={texture} />;
     }

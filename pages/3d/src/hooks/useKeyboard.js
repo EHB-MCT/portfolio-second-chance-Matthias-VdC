@@ -9,7 +9,7 @@ function actionByKey(key) {
         KeyD: 'moveRight',
         Space: 'jump',
         Digit1: 'crossbow',
-        Digit2: 'ballista',
+        Digit2: 'ram',
         Digit3: '',
     };
     return keyActionMap[key];
@@ -23,14 +23,14 @@ export const useKeyboard = () => {
         moveRight: false,
         jump: false,
         crossbow: false,
-        texture2: false,
+        ram: false,
         texture3: false,
     });
     const setPrice = useStore((state) => state.setPrice)
 
     const price = {
         crossbow: 75,
-        ballista: 150,
+        ram: 125,
     };
 
     const handleKeyDown = useCallback((e) => {
@@ -43,9 +43,7 @@ export const useKeyboard = () => {
                 });
             });
             // verify if a price for the item exists
-            if (Object.values(price).indexOf(action) > -1) {
-                useStore.setState({ selectedPrice: price[action] })
-            }
+            useStore.setState({ selectedPrice: price[action] });
         }
     }, []);
 

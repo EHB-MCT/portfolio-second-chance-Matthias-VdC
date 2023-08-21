@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useStore } from "../hooks/useStore";
 import { socket } from "../hooks/useSocket";
-import OtherPlayerCube from "./OtherPlayerCube";
+import OtherPlayerModel from "./models/OtherPlayerModel";
 
 export default function OtherPlayers() {
   const [money, round, cubes, roundPlaying] = useStore((state) => [
@@ -29,6 +29,6 @@ export default function OtherPlayers() {
     }
   });
   return playerPos.map(({ x, y, z, id }) => (
-    <OtherPlayerCube key={id} position={[x, y, z]}></OtherPlayerCube>
+    <OtherPlayerModel key={id} scale={0.5} position={[x, y - 1, z]} />
   ));
 }

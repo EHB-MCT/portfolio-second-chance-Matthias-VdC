@@ -10,17 +10,18 @@ function TextureSelector() {
     state.texture,
     state.setTexture,
   ]);
-  const { crossbow } = useKeyboard();
+  const { crossbow, ram } = useKeyboard();
 
   useEffect(() => {
-    const textures = { crossbow };
+    const textures = { crossbow, ram };
     const pressedTexture = Object.entries(textures).find(
       ([key, value]) => value
     );
     if (pressedTexture) {
       setTexture(pressedTexture[0]);
     }
-  }, [crossbow, setTexture]);
+  }, [crossbow, ram, setTexture]);
+
 
   useEffect(() => {
     const timeout = setTimeout(() => {

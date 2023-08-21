@@ -2,11 +2,11 @@ import { useBox } from "@react-three/cannon";
 import { useFrame } from "@react-three/fiber";
 // import * as TWEEN from "@tweenjs/tween.js";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useStore } from "../hooks/useStore";
+import { useStore } from "../../hooks/useStore";
 import shallow from "zustand/shallow";
 import gsap from "gsap";
 import { useAnimations, useGLTF } from "@react-three/drei";
-import useSkinnedMeshClone from "../hooks/useSkinnedMeshClone";
+import useSkinnedMeshClone from "../../hooks/useSkinnedMeshClone";
 import { Vector3 } from "three";
 
 export default function Enemy (props) {
@@ -50,7 +50,7 @@ export default function Enemy (props) {
               duration: Math.round(1 / props.speed),
               ease: "none",
               onStart: () => { // Enemy rotation
-                if(!path[i]) return
+                if(!path[i + 1]) return
                 if(path[i + 1][0] !== undefined) {
                   ref.current.lookAt(new Vector3(path[i + 1][0], path[i + 1][1] - 0.5, path[i + 1][2]));
                 }
