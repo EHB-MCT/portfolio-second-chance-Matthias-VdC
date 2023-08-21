@@ -23,7 +23,7 @@ export const Menu = () => {
       <h1>Money: ${money}</h1>
       <h1>Health: {health}</h1>
       <h1>Round: {round}</h1>
-      <button onClick={() => saveWorld()}>SAVE</button>
+      {/* <button onClick={() => saveWorld()}>SAVE</button> */}
       <button onClick={() => resetWorld()}>RESET</button>
       <button onClick={() => gameOver()}>GAME OVER</button>
       <button

@@ -50,7 +50,7 @@ export default function Enemy (props) {
               duration: Math.round(1 / props.speed),
               ease: "none",
               onStart: () => { // Enemy rotation
-                if(!path[i]) return
+                if(!path[i + 1]) return
                 if(path[i + 1][0] !== undefined) {
                   ref.current.lookAt(new Vector3(path[i + 1][0], path[i + 1][1] - 0.5, path[i + 1][2]));
                 }

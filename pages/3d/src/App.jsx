@@ -9,13 +9,14 @@ import Ground from "./components/Ground";
 import Player from "./components/Player";
 import TextureSelector from "./components/TextureSelector";
 import { Menu } from "./components/hud/HUD";
-import { NoToneMapping } from "three";
+import { NoToneMapping, Vector3 } from "three";
 import Enemies from "./components/Enemies";
 import Path from "./components/Path";
 import OtherPlayers from "./components/OtherPlayers";
 import GameOverScreen from "./components/hud/GameOverScreen";
 import { useStore } from "./hooks/useStore";
 import Castle from "./components/models/environment/Castle";
+import { Ram } from "./components/models/Ram";
 
 function App() {
   const [isGameOver, enemies] = useStore((state) => [
@@ -31,11 +32,14 @@ function App() {
           // toneMapping: NoToneMapping,
         }}
         shadows
+        
         // linear
       >
         <Suspense>
-          <Sky sunPosition={[100, 100, 20]} />
-          <ambientLight intensity={0.5} />
+          {/* <Sky sunPosition={[100, 40, 20]} /> */}
+          <Sky distance={450000} sunPosition={[0, 1, 0]} inclination={0} azimuth={0.25} />
+          <ambientLight intensity={0.35} />
+          <directionalLight position={[0, 50, 0]} lookAt={new Vector3(0,0,0)} color="rgb(120,120,120)" />
           <FirstPersonCamera />
           <Physics>
             <Player />
@@ -43,7 +47,6 @@ function App() {
             <Cubes />
             <Path />
             <Enemies />
-            {/* <Crossbow /> */}
             <Ground />
             <Castle />
           </Physics>
