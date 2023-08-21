@@ -14,7 +14,7 @@ export const useStore = create((set, get) => ({
     enemies: [],
     enemiesPos: [],
     health: 20,
-    money: 1000,
+    money: 100,
     round: 0,
     enemyFrequency: 5,
     roundPlaying: false,
