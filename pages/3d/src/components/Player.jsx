@@ -34,7 +34,7 @@ export default function Player() {
   }, [api.position]);
 
   useFrame(({ clock }) => {
-    socket.emit("update", {
+    socket.emit("updatePos", {
       id: socket.id,
       x: pos.current[0],
       y: pos.current[1],

@@ -11,19 +11,42 @@ export default function HotBar({ activeTexture }) {
     ram: ramPreview,
   };
   return (
-    <>
-      <div className="hotbar image-container">
-        {Object.entries(previews).map(([k, src]) => {
-          return (
+    <div className="hotbar">
+      {Object.entries(previews).map(([k, src]) => {
+        return (
+          <div className="image-container" key={k}>
+            {k === "crossbow" ? (
+              <p
+                style={{
+                  position: "absolute",
+                  color: "white",
+                  top: 0,
+                  left: 15,
+                }}
+              >
+                75$
+              </p>
+            ) : null}
+            {k === "ram" ? (
+              <p
+                style={{
+                  position: "absolute",
+                  color: "white",
+                  top: 0,
+                  left: 15 + 110,
+                }}
+              >
+                125$
+              </p>
+            ) : null}
             <img
               src={src}
-              key={k}
               className={`${k === activeTexture} image-preview`}
               alt={k}
             />
-          );
-        })}
-      </div>
-    </>
+          </div>
+        );
+      })}
+    </div>
   );
 }

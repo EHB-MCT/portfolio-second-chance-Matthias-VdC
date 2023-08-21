@@ -1,21 +1,21 @@
-.image-preview{
+.image-preview {
     width: 75px;
     height: 75px;
     padding: 1em;
 }
 .image-container {
-    box-sizing: border-box;
-    border: 5px solid black;
     background-color: rgba(46, 46, 46, 0.4);
 }
 .image-container .true {
     border: 4px solid white;
 }
 .hotbar {
-    width: 100%;
-    height: 125px;
     position: absolute;
+    display: flex;
+    width: 100vw;
+    height: 125px;
     bottom: 0px;
-    left: 50%;
-    transform: translateX(-50%);
+    justify-content: left;
+    align-items: center;
+    border: 5px solid black;
 }

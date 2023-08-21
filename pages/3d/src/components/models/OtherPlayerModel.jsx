@@ -10,16 +10,23 @@ Title: Mini Simple Character (Free Demo + Animations)
 
 import React, { useRef, useEffect } from 'react';
 import { useGLTF, useAnimations } from '@react-three/drei';
+import { Euler } from 'three';
 
-export default function OtherPlayerModel({ position, ...props }) {
+export default function OtherPlayerModel({ position, rotation, ...props }) {
   const group = useRef();
   const { nodes, materials, animations } = useGLTF('/models/player/scene-transformed.glb');
   const { actions } = useAnimations(animations, group);
+
 
   useEffect(() => {
     // Idle | Jump | Loose | Run | Walk
     actions["Idle"].play();
   }, []);
+
+  useEffect(() => {
+    if (!group.current && !rotation) return;
+    group.current.rotation.y = rotation;
+  }, [rotation]);
 
   return (
     <group ref={group} {...props} position={position} dispose={null}>
