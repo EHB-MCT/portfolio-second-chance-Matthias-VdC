@@ -1,0 +1,21 @@
+.image-preview {
+    width: 75px;
+    height: 75px;
+    padding: 1em;
+}
+.image-container {
+    background-color: rgba(46, 46, 46, 0.4);
+}
+.image-container .true {
+    border: 4px solid white;
+}
+.hotbar {
+    position: absolute;
+    display: flex;
+    width: 100vw;
+    height: 125px;
+    bottom: 0px;
+    justify-content: left;
+    align-items: center;
+    border: 5px solid black;
+}
