@@ -60,11 +60,16 @@ To get a local copy up and running follow these simple example steps.
   npm install nodemon -g
   ```
 
+* serve
+```sh
+npm i serve -g
+```
+
 * Docker
 https://www.docker.com/
 
 
-### Installation
+### Singleplayer
 
 1. Clone the repo
    ```sh
@@ -72,27 +77,49 @@ https://www.docker.com/
    ```
 2. Go into the app
    ```sh
-   cd app
+   cd 3d
    ```
 3. Install NPM packages
    ```sh
    npm install
    ```
-4. Go into the api folder
+4. Run application
    ```sh
-   cd.. && cd api
+   serve -s build
    ```
-5. Install NPM packages
+
+### Multiplayer
+
+   ```
+   Same steps as singleplayer required + the following steps in a new terminal
+   ```
+
+1. Go into the api
+   ```sh
+   cd 3d/api
+   ```
+
+With Nodemon
+
+2. Install dependencies
    ```sh
    npm install
    ```
-6. Start the api with docker or nodemon
+3. Start the api with nodemon
    ```sh
    npm start
    ```
-7. open a new terminal, go into the app and start the application
+
+With Docker
+
+2. Build Docker image
    ```sh
-   cd app && npm start
+   docker build -t 3d-api .
+   ```
+
+3. Run image in container
+   ```sh
+   docker run -p 8000:8000 -d 3d-api
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
