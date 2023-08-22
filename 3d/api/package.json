@@ -1,0 +1,20 @@
+{
+  "name": "basic-routing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.js",
+    "test": "jest src/index.spec.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.1",
+    "socket.io": "^4.5.4"
+  },
+  "devDependencies": {
+    "jest": "^29.6.3"
+  }
+}
